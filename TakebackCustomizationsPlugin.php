@@ -14,7 +14,7 @@ class TakebackCustomizationsPlugin extends Omeka_Plugin_AbstractPlugin
         $select = $args['select'];
         $params = $args['params'];
 
-        if (!isset($_REQUEST['sort_field'])) {
+        if ((!is_admin_theme()) && (!isset($_REQUEST['sort_field']))) {
             $sort_field = 'Dublin Core,Date';
             $sort_dir = 'ASC';
             $select->reset('order');
