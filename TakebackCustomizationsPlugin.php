@@ -3,7 +3,8 @@
 class TakebackCustomizationsPlugin extends Omeka_Plugin_AbstractPlugin
 {
     protected $_hooks = array(
-        'items_browse_sql'
+        'items_browse_sql',
+        'collections_browse_sql'
     );
 
     /**
@@ -18,6 +19,21 @@ class TakebackCustomizationsPlugin extends Omeka_Plugin_AbstractPlugin
             $sort_dir = 'ASC';
             $select->reset('order');
             get_db()->getTable('Item')->applySorting($select, $sort_field, $sort_dir);
+        }
+    }
+
+    /**
+     * Order Collections
+     */
+    public function hookCollectionsBrowseSql($args) {
+        $select = $args['select'];
+
+        if (!isset($_REQUEST['sort_field'])) {
+            $select->reset(Zend_Db_Select::ORDER);
+            $sort_string = "CASE WHEN et_sort.text REGEXP '<[^>]*>' = 1 THEN TRIM(SUBSTR(et_sort.text, INSTR(et_sort.text ,' '))) ELSE et_sort.text END ASC";
+            $sort_order = new Zend_Db_Expr($sort_string);
+            $select->order($sort_order);
+            get_db()->getTable('Collection')->applySorting($select, 'Dublin Core,Title', 'ASC');
         }
     }
 }
