@@ -39,6 +39,7 @@ class TakebackCustomizationsPlugin extends Omeka_Plugin_AbstractPlugin
         $select->reset(Zend_Db_Select::ORDER);
 
         $sort_string = "CASE WHEN et_sort.text REGEXP '<[^>]*>' = 1 THEN TRIM(SUBSTR(et_sort.text, INSTR(et_sort.text ,' '))) ELSE et_sort.text END ASC";
+        $sort_string = "FIELD(collections.id,12,15,19,20,6,11,18,17,16,13,14,21)";
         $sort_order = new Zend_Db_Expr($sort_string);
         $select->order($sort_order);
 
