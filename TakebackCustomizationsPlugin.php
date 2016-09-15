@@ -4,7 +4,8 @@ class TakebackCustomizationsPlugin extends Omeka_Plugin_AbstractPlugin
 {
     protected $_hooks = array(
         'items_browse_sql',
-        'collections_browse_sql'
+        'collections_browse_sql',
+        'tags_browse_sql'
     );
 
     /**
@@ -46,5 +47,18 @@ class TakebackCustomizationsPlugin extends Omeka_Plugin_AbstractPlugin
         get_db()->getTable('Collection')->applySorting($select, 'Dublin Core,Title', 'ASC');
 
     }
+
+    /**
+     * Hijack the tags query.
+     */
+    public function hookTagsBrowseSql($args) {
+        if(is_admin_theme()) {
+            return;
+        }
+
+        $select = $args['select'];
+        $select = $select->where("tags.name NOT IN('institutional racism','semantics')");
+    }
+
 }
 
