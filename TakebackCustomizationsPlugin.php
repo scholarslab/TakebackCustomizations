@@ -65,9 +65,6 @@ class TakebackCustomizationsPlugin extends Omeka_Plugin_AbstractPlugin
     }
 
     public function filterElementsSelectOptions($options) {
-        if(is_admin_theme()) {
-            return;
-        }
         // Remove the Item Type Metadata elements
         unset($options['Item Type Metadata']);
 
