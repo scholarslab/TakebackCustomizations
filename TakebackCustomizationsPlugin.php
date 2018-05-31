@@ -8,6 +8,10 @@ class TakebackCustomizationsPlugin extends Omeka_Plugin_AbstractPlugin
         'tags_browse_sql'
     );
 
+    protected $_filters = array(
+        'elements_select_options'
+    );
+
     /**
      * Sets the default sort field to DC:Date, and the default order to ASC.
      */
@@ -58,6 +62,35 @@ class TakebackCustomizationsPlugin extends Omeka_Plugin_AbstractPlugin
 
         $select = $args['select'];
         $select = $select->where("tags.name NOT IN('institutional racism','semantics')");
+    }
+
+    public function filterElementsSelectOptions($options) {
+        if(is_admin_theme()) {
+            return;
+        }
+        // Remove the Item Type Metadata elements
+        unset($options['Item Type Metadata']);
+
+        $elements_to_keep = array(
+            'Title',
+            'Subject',
+            'Description',
+            'Creator',
+            'Publisher',
+            'Date',
+            'Rights',
+            'Relation',
+            'Format'
+        );
+
+        foreach ($options['Dublin Core'] as $key => $val) {
+            if(!(in_array($val, $elements_to_keep))) {
+                unset($options['Dublin Core'][$key]);
+            }
+        }
+
+
+        return $options;
     }
 
 }
